@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Prabang.Azure.DependencyInjection</RootNamespace>
+    <PackageId>Prabang.Azure.DependencyInjection</PackageId>
+    <Company>Prabang Ltd</Company>
+    <Product>Prabang.Azure.DependencyInjection</Product>
+    <Authors>Rich Tebb</Authors>
+    <Description>Autofac dependency injection for Azure V2 functions</Description>
+    <AssemblyName>Prabang.Azure.DependencyInjection</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/richtea/azure-dependency-injection</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/richtea/azure-dependency-injection</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>
