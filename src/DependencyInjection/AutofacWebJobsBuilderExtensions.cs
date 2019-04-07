@@ -18,12 +18,13 @@ namespace Prabang.Azure.DependencyInjection
         /// Adds Autofac dependency injection extension to the provided <see cref="IWebJobsBuilder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="IWebJobsBuilder"/> to configure.</param>
-        /// <param name="configureAutofacServices"></param>
-        /// <param name="configureCoreServices"></param>
-        /// <param name="configureScopedAutofacServices"></param>
+        /// <param name="configureServices">A delegate to register services by using the standard Microsoft services interface.</param>
+        /// <param name="configureAutofacRegistrations">A delegate to register dependencies directly with the Autofac container.</param>
+        /// <param name="configureScopedAutofacRegistrations">A delegate to register Autofac dependencies at the lifetime scope level (i.e. per function invocation).</param>
         public static IWebJobsBuilder AddDependencyInjection(this IWebJobsBuilder builder,
-            Action<ContainerBuilder> configureAutofacServices, Action<IServiceCollection> configureCoreServices = null,
-            Action<ContainerBuilder> configureScopedAutofacServices = null)
+            Action<IServiceCollection> configureServices = null,
+            Action<ContainerBuilder> configureAutofacRegistrations = null,
+            Action<ContainerBuilder> configureScopedAutofacRegistrations = null)
         {
             if (builder == null)
             {
@@ -31,15 +32,19 @@ namespace Prabang.Azure.DependencyInjection
             }
 
             //builder.Services.AddSingleton<IServiceProviderBuilder>(_ => new AutofacServiceProviderBuilder(b => { }));
-            AddCommonDependencyInjection(builder, configureAutofacServices ?? (_ => { }),
-                configureCoreServices ?? (_ => { }), configureScopedAutofacServices ?? (_ => { }));
+            AddCommonDependencyInjection(builder,
+                configureServices ?? (_ => { }),
+                configureAutofacRegistrations ?? (_ => { }),
+                configureScopedAutofacRegistrations ?? (_ => { }));
 
             return builder;
         }
 
 
         private static void AddCommonDependencyInjection(IWebJobsBuilder builder,
-            Action<ContainerBuilder> configureServices, Action<IServiceCollection> configureCoreServices, Action<ContainerBuilder> configureScopedAutofacServices)
+            Action<IServiceCollection> configureCoreServices, 
+            Action<ContainerBuilder> configureAutofacRegistrations, 
+            Action<ContainerBuilder> configureScopedAutofacRegistrations)
         {
             configureCoreServices(builder.Services);
 
@@ -49,8 +54,8 @@ namespace Prabang.Azure.DependencyInjection
 
             var cb = new ContainerBuilder();
             cb.Populate(builder.Services);
-            configureServices(cb);
-            cb.Register(_ => configureScopedAutofacServices);
+            configureAutofacRegistrations(cb);
+            cb.Register(_ => configureScopedAutofacRegistrations);
 
             var container = cb.Build();
             builder.Services.AddSingleton(container);
